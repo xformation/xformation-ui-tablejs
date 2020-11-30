@@ -1,0 +1,43 @@
+Table.js
+
+To integreate Table.js library in your application, 
+
+1) import Table component from table.tsx file.
+2) import table.css ( this will provide basic styling to your table )
+
+Data that Table component needs.
+
+1) valueFromData
+You need to provide an object combining
+
+a) columns
+-columns is an array of objects containing 
+i) label: Label you want to show on the column header
+ii) key: key representing the respective value in the data
+iii) renderCallback: this is the callback to dynamically render a particular cell of the row depending on the value of that particular cell. You will get two parameters in the function. 
+  value: value of that particular cell
+  row: entire row
+
+b) data
+- array of objects representing each row in the table. The data that will be shown in the table depends on the keys in the column. Each key of the object should be the same keys given in the column.
+
+
+2) searchKey
+- searchKey is the key on which you want the search operation to be performed
+
+3) showingLine
+- It should have format like below:
+"Showing %start% to %end% of %total% Tickets"
+This is the line representing the current start and end row number in the total rows.
+
+4) tableClasses
+- If you want to customize your table according to your need, you can do it via your customized css classes. tableClassess accepts four values.
+
+a) table
+- whatever value you provide to this, it will be given as the css class to table.
+b) tableParent
+- css class for immediate parent
+c) parentClass
+- css class for the main parent
+
+
