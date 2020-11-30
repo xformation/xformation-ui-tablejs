@@ -357,28 +357,26 @@ export class Table extends React.Component<any, any> {
         }
         return (
             <div className={`${tableClasses.parentClass} custom-table`}>
-                <div className="d-block w-100 py-3 toolbar">
-                    <div className="d-inline-block showing">{showingLine}</div>
-                    <div className="d-inline-block showby">
-                        <label className="d-inline-block">Show</label>
+                <div className="toolbar">
+                    <div className="showing">{showingLine}</div>
+                    <div className="showby">
+                        <label>Show</label>
                         <select onChange={this.handleChange} className="form-control">
                             {this.displayShowPageLimit()}
                         </select>
-                        <span className="d-inline-block">entries per page</span>
+                        <span>entries per page</span>
                     </div>
-                    <div className="d-inline-block multiselect">
+                    <div className="multiselect">
                         <div className="form-control select-label" onClick={this.toggleColumnSelect}>
-                            Select columns <i className="fa fa-chevron-down float-right"></i>
+                            Select columns <i className="arrow down"></i>
                         </div>
                         <div style={{ display: showSelect ? "" : "none" }} className="border options">
                             {this.renderColumns()}
                         </div>
                     </div>
-                    <div className="float-right form-group filter-search-control">
+                    <div className="filter-search-control">
                         <input type="text" className="input-group-text" onChange={this.onSearchChange} value={this.state.searchKey} />
-                        <button>
-                            <i className="fa fa-search"></i>
-                        </button>
+                        <button><span>Search</span></button>
                     </div>
                 </div>
                 <div className={`${tableClasses.tableParent} data-table-parent`}>
