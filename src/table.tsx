@@ -30,7 +30,7 @@ export class Table extends React.Component<any, any> {
     };
 
     tableBodyData() {
-        const { displayData, searchKey, perPageLimit, currentPage, columns, visibleCheckbox } = this.state;
+        const { displayData, perPageLimit, currentPage, columns, visibleCheckbox } = this.state;
         const retData = [];
         const length = displayData.length;
         const cLength = columns.length;
@@ -38,10 +38,10 @@ export class Table extends React.Component<any, any> {
             for (let i = 0; i < length; i++) {
                 if (i >= currentPage * perPageLimit && i <= (currentPage * perPageLimit + (perPageLimit - 1))) {
                     const tdJSX = [];
-                    if (visibleCheckbox == true) {
+                    if (visibleCheckbox === true) {
                         tdJSX.push(
                             <td>
-                                <input type="checkbox" checked={displayData[i].checkStatus} className="checkbox" onChange={(e) => { this.onChangeParentCheckbox(e, i) }} />
+                                <input type="checkbox" checked={displayData[i].checkStatus} className={`checkbox`} onChange={(e) => { this.onChangeParentCheckbox(e, i) }} />
                             </td>
                         );
                     }
@@ -61,7 +61,7 @@ export class Table extends React.Component<any, any> {
                             }
                         }
                     }
-                    retData.push(<tr key={i}>{tdJSX}</tr>);
+                    retData.push(<tr className={`${displayData[i].checkStatus ? 'checked-row' : ''}`} key={i}>{tdJSX}</tr>);
                 }
             }
         } else {
@@ -107,7 +107,7 @@ export class Table extends React.Component<any, any> {
         const { sortType, sortKey, columns, visibleCheckbox, displayData } = this.state;
         const length = columns.length;
         const retData = [];
-        if (visibleCheckbox == true && displayData.length > 0) {
+        if (visibleCheckbox === true && displayData.length > 0) {
             retData.push(<th><input type="checkbox" checked={this.state.isAllChecked} onChange={this.checkAllBoxes} className="checkbox" /></th>);
         }
         for (let i = 0; i < length; i++) {
@@ -153,13 +153,13 @@ export class Table extends React.Component<any, any> {
         let countCheckedCheckbox = 0;
         displayData[index].checkStatus = checked;
         for (let j = 0; j < displayData.length; j++) {
-            if (displayData[j].checkStatus == true) {
+            if (displayData[j].checkStatus === true) {
                 countCheckedCheckbox++;
             } else {
                 countCheckedCheckbox--;
             }
         }
-        if (countCheckedCheckbox == displayData.length) {
+        if (countCheckedCheckbox === displayData.length) {
             status = true;
         } else {
             status = false;
@@ -171,7 +171,7 @@ export class Table extends React.Component<any, any> {
     }
 
     peginationOfTable() {
-        const { currentPage, totalPages, displayData, perPageLimit } = this.state;
+        const { currentPage, totalPages, displayData } = this.state;
         let rows = [];
         if (displayData.length > 0) {
             for (let i = 0; i < totalPages; i++) {
@@ -222,7 +222,7 @@ export class Table extends React.Component<any, any> {
     setCurrentPageIntoView = () => {
         const { currentPage } = this.state;
         let scrollLeft = currentPage * 28;
-        if(this.paginationRef.current){
+        if (this.paginationRef.current) {
             this.paginationRef.current.scrollTo(scrollLeft, 0);
         }
     };
@@ -244,27 +244,39 @@ export class Table extends React.Component<any, any> {
     }
 
     onSearchChange = (e: any) => {
-        let { value } = e.target;
+        console.log(e.target.value);
+        const { value } = e.target;
         this.setState({
             searchKey: value,
             currentPage: 0,
             sortType: sortEnum.NONE,
             sortKey: '',
         });
-        const { data } = this.state;
-        const { searchKey } = this.props;
+        const { data, columns } = this.state;
         var queryResult = [];
-        value = value ? value.toLowerCase() : "";
-        for (let i = 0; i < data.length; i++) {
-            const searchKeyValue = data[i][searchKey];
-            if ((searchKeyValue && searchKeyValue.toLowerCase().indexOf(value) !== -1) || value === '') {
-                queryResult.push(data[i]);
+        if (data.length > 0) {
+            if (value.trim()) {
+                for (let i = 0; i < data.length; i++) {
+                    let row = data[i];
+                    console.log(row);
+                    for (let j = 0; j < columns.length; j++) {
+                        let colData = columns[j].key;
+                        if (row[colData]) {
+                            if (row[colData].toLowerCase().indexOf(value) !== -1 || row[colData].indexOf(value) !== -1) {
+                                queryResult.push(data[i]);
+                                break;
+                            }
+                        }
+                    }
+                }
+            } else {
+                queryResult = data;
             }
+            this.setState({
+                displayData: queryResult,
+            });
+            this.calculateTotalPages(queryResult);
         }
-        this.setState({
-            displayData: queryResult,
-        });
-        this.calculateTotalPages(queryResult);
     }
 
     displayShowPageLimit() {
@@ -344,7 +356,7 @@ export class Table extends React.Component<any, any> {
 
     render() {
         const { displayData, perPageLimit, currentPage, showSelect } = this.state;
-        let { tableClasses, showingLine } = this.props;
+        let { tableClasses, showingLine, dark } = this.props;
         let startIndex = perPageLimit * currentPage + 1;
         let endIndex = perPageLimit * (currentPage + 1);
         if (endIndex > displayData.length) {
@@ -356,7 +368,7 @@ export class Table extends React.Component<any, any> {
             showingLine = showingLine.replace("%total%", displayData.length);
         }
         return (
-            <div className={`${tableClasses.parentClass} custom-table`}>
+            <div className={`${tableClasses.parentClass} custom-table ${dark ? 'dark' : ''}`}>
                 <div className="toolbar">
                     <div className="showing">{showingLine}</div>
                     <div className="showby">
